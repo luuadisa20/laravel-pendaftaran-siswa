@@ -1,0 +1,65 @@
+.main-nav-lrvl {
+    border-bottom: 4px solid #ffc93c;
+}
+
+.bg-primary-lrvl-light {
+    background-color: #256db9;
+}
+
+.bg-primary-lrvl {
+    color: white;
+    background-color: #144272;
+}
+
+.bg-primary-lrvl-grd {
+    background-image: linear-gradient(45deg, #144272, #256db9);
+}
+
+.rounded-3 {
+    border-radius: 1rem;
+}
+
+.rounded-4 {
+    border-radius: 1.5rem;
+}
+
+.rounded-5 {
+    border-radius: 2rem;
+}
+
+.text-secondary-lrvl {
+    color: #ffc93c;
+}
+
+.btn-secondary-lrvl {
+    background-color: #ffc93c;
+}
+
+.btn-secondary-lrvl:hover {
+    background-color: #c99000;
+}
+
+.carousel-content {
+    height: 350px;
+    background-repeat: no-repeat;
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+    filter: brightness(0.6);
+}
+
+.select2-selection,
+.select2-selection__rendered {
+    border-radius: 1.5rem !important;
+}
+
+.no-gutter.row,
+.no-gutter.container,
+.no-gutter.container-fluid {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.no-gutter > [class^="col-"] {
+    padding-left: 0;
+    padding-right: 0;
+}
