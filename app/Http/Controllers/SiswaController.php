@@ -28,10 +28,10 @@ class SiswaController extends Controller
       'nisn' => 'required',
       'nama' => 'required',
       'jenis-kelamin' => 'required',
-      'email' => 'required|email',
+      'email' => "required|email|unique:user",
       'no-hp' => 'required',
-      'no-hp-ayah' => 'required'
-      'no-hp-ibu' => 'required'
+      'no-hp-ayah' => 'required',
+      'no-hp-ibu' => 'required',
       'asal-sekolah-input' => 'required'
     ]);
 
@@ -46,7 +46,7 @@ class SiswaController extends Controller
     $user = new User;
     $user->nama = $request->post('nama');
     $user->email = $request->post('email');
-    // $user->role = 'student';
+    $user->role = 'student';
     $user->password = $password;
     $user->save();
 

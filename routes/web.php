@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+Auth::routes(['register' => false, 'reset' => false]);
+
+Route::get('/error-400', function () {
+  return view('errors.400');
+});
+
 Route::get('/', function () {
   return view('beranda', [
     'title' => 'Beranda'
@@ -48,20 +54,54 @@ Route::get('/hubungi-kami', function () {
   ]);
 });
 
-Route::get('/login', [LoginController::class, 'index']);
+Route::get(
+  '/logout',
+  [LoginController::class, 'logout']
+)->name('logout')->middleware('auth');
 
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get(
+  '/pendaftaran-siswa',
+  [SiswaController::class, 'index']
+);
 
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post(
+  '/pendaftaran-siswa',
+  [SiswaController::class, 'cetak']
+)->name('cetak');
 
-Route::get('/pendaftaran-siswa', [SiswaController::class, 'index']);
+Route::get(
+  '/dashboard',
+  [AdminController::class, 'index']
+)->middleware('auth');
 
-// Route::post('/pendaftaran-siswa', [SiswaController::class, 'cetak'])->name('cetak');
+Route::get(
+  '/page-pembayaran',
+  [AdminController::class, 'pembayaran']
+)->name('pembayaran')->middleware('auth');
 
-// Route::get('/dashboard', [AdminController::class, 'index'])->middleware('auth');
+Route::post(
+  '/page-pembayaran',
+  [AdminController::class, 'proses']
+)->name('proses')->middleware('auth');
 
-// Route::get('/page-pembayaran', [AdminController::class, 'pembayaran'])->name('pembayaran')->middleware('auth');
+// routes yang dilindungi dengan middleware isAdmin,
+// middleware yang mengecek apakah user yg login saat ini adalah role admin
+Route::get(
+  '/detail-pembayaran/{id}',
+  [AdminController::class, 'detail_pembayaran']
+)->name('detail_pembayaran')->middleware(['auth', 'admin']);
 
-Auth::routes(['register' => false, 'reset' => false]);
+Route::get(
+  '/detail-pendaftaran/{id}',
+  [AdminController::class, 'detail_pendaftaran']
+)->name('detail_pendaftaran')->middleware(['auth', 'admin']);
 
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post(
+  '/proses-verifikasi',
+  [AdminController::class, 'verifikasi']
+)->name('verifikasi')->middleware(['auth', 'admin']);
+
+Route::post(
+  '/proses-tolak',
+  [AdminController::class, 'tolak']
+)->name('tolak')->middleware(['auth', 'admin']);

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class isAdmin
 {
@@ -17,12 +18,12 @@ class isAdmin
    */
   public function handle(Request $request, Closure $next)
   {
-    if (Auth::user()->role == 'admin') {
-      return $next($request);
-    } else {
+    if (Auth::user()->role === 'admin') {
       return $next($request);
     }
 
-    return back()->with('error', 'Opps, You\'re not Admin');
+    Session::flash('message', 'Opps, You\'re not Admin');
+    Session::flash('alert-class', 'alert-danger');
+    return redirect('/dashboard');
   }
 }

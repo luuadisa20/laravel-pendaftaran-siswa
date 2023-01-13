@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -15,12 +16,12 @@ class AdminController extends Controller
     $data = [];
 
     if (Auth::user()->role !== 'admin') {
-      $siswa = DB::table('siswa')->join('user', 'siswa.id_user', '=', 'user.id')->where('user.id', '=', Auth::user()->id);
+      $siswa = DB::table('siswa')->join('user', 'siswa.id_user', '=', 'user.id')->where('user.id', '=', Auth::user()->id)->first();
 
       $data['title'] = 'Dashboard';
       $data['siswa'] = $siswa;
 
-      return view('dashboard', $data);
+      return view('dashboard-student', $data);
     } else {
       $data['title'] = 'Dashboard';
 
@@ -28,35 +29,115 @@ class AdminController extends Controller
     }
   }
 
-  public function pembayaran()
+  public function pembayaran(Request $request)
   {
-    return view('pembayaran', [
-      'title' => 'Pembayaran',
-    ]);
+    $data = [];
+
+    if (Auth::user()->role !== 'admin') {
+      $siswa = DB::table('siswa')->join('user', 'siswa.id_user', '=', 'user.id')->where('user.id', '=', Auth::user()->id)->first();
+
+      $data['title'] = 'Pembayaran';
+      $data['javascript'] = 'pembayaran-student.js';
+      $data['siswa'] = $siswa;
+
+      return view('pembayaran-student', $data);
+    } else {
+      $pendaftaran = DB::table('siswa')->paginate(10);
+
+      $data['title'] = 'Verifikasi Pembayaran';
+      $data['javascript'] = 'pembayaran.js';
+      $data['pendaftaran'] = $pendaftaran;
+
+      return view('pembayaran', $data);
+    }
   }
 
-  public function proses_pembayaran(Request $request)
+  public function detail_pembayaran($id = null)
   {
-    $this->validate($request, [
-      'file' => 'required',
+    $data = [];
+
+    $siswa = DB::table('siswa')->where('id', '=', $id)->first();
+
+    $data['title'] = 'Detail Pembayaran';
+    $data['siswa'] = $siswa;
+
+    return view('detail-pembayaran', $data);
+  }
+
+  public function detail_pendaftaran($id = null)
+  {
+    $data = [];
+
+    $siswa = DB::table('siswa')->where('id', '=', $id)->first();
+
+    $data['title'] = 'Detail Pendaftaran';
+    $data['siswa'] = $siswa;
+
+    return view('detail-pendaftaran', $data);
+  }
+
+  public function proses(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'nama-bank-input' => 'required',
+      'nama-pemilik-rekening' => 'required',
+      'nominal' => 'required',
     ]);
 
-    $file = $request->file('bukti-pembayaran');
+    $validator->after(function ($validator) {
+      if (!file_exists($_FILES['bukti-pembayaran']['tmp_name'])) {
+        $validator->errors()->add('bukti-pembayaran', 'Bukti pembayaran is required');
+      }
+    });
 
-    $file->getClientOriginalName();
+    if ($validator->fails()) {
+      return redirect('page-pembayaran')
+        ->withErrors($validator)
+        ->withInput();
+    }
 
-    $lokasi_upload = '/pembayaran';
+    $filename = 'file' . time() . $_FILES['bukti-pembayaran']['name'];
 
-    $file->move($lokasi_upload, $file->getClientOriginalName());
+    $lokasi_upload = './pembayaran/' . $filename;
+
+    move_uploaded_file($_FILES['bukti-pembayaran']['tmp_name'], $lokasi_upload);
 
     $id = Auth::user()->id;
 
-    $siswa = Siswa::find($id);
-    $siswa->bukti_pembayran = $file->getClientOriginalName();
-    $siswa->update();
+    $siswa = Siswa::where('id_user', $id);
+    $siswa->update([
+      'nama_bank' => $request->post('nama-bank-input'),
+      'nama_pemilik_rekening' => $request->post('nama-pemilik-rekening'),
+      'nominal' => $request->post('nominal'),
+      'bukti_pembayaran' => $filename,
+    ]);
 
     Session::flash('message', 'Pembayaran telah dilakukan silahkan menunggu admin melakukan validasi.');
     Session::flash('alert-class', 'alert-success');
-    redirect('dashboard');
+    return redirect('/dashboard');
+  }
+
+  public function verifikasi(Request $request)
+  {
+    $siswa = Siswa::where('id', $request->post('id'));
+    $siswa->update([
+      'status_registrasi' => 'accepted'
+    ]);
+
+    Session::flash('message', 'Verifikasi berhasil dilakukan');
+    Session::flash('alert-class', 'alert-success');
+    return redirect('/page-pembayaran');
+  }
+
+  public function tolak(Request $request)
+  {
+    $siswa = Siswa::where('id', $request->post('id'));
+    $siswa->update([
+      'status_registrasi' => 'denied'
+    ]);
+
+    Session::flash('message', 'Penolakan berhasil dilakukan');
+    Session::flash('alert-class', 'alert-success');
+    return redirect('/page-pembayaran');
   }
 }

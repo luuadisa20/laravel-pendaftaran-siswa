@@ -27,8 +27,22 @@
     border-radius: 2rem;
 }
 
+.text-primary-lrvl {
+    color: #144272;
+}
+
 .text-secondary-lrvl {
     color: #ffc93c;
+}
+
+.btn-primary-lrvl {
+    color: white;
+    background-color: #144272;
+}
+
+.btn-primary-lrvl:hover {
+    color: white;
+    background-color: #0c3158;
 }
 
 .btn-secondary-lrvl {
