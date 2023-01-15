@@ -57,7 +57,8 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">Rp</span>
                 </div>
-                <input type="text" name="nominal" id="nominal" class="form-control">
+                <input type="hidden" name="nominal" id="nominal-input">
+                <input type="text" id="nominal" class="form-control">
               </div>
             </div>
 
@@ -70,7 +71,8 @@
             <div class="form-group col">
               <label for="bukti-pembayaran">Bukti Pembayaran</label>
               <div class="custom-file mb-3">
-                <input type="file" class="custom-file-input" name="bukti-pembayaran" id="bukti-pembayaran" required>
+                <input type="file" class="custom-file-input" name="bukti-pembayaran" id="bukti-pembayaran"
+                  accept="image/*" required>
                 <label class="custom-file-label" for="bukti-pembayaran">Choose file...</label>
               </div>
             </div>

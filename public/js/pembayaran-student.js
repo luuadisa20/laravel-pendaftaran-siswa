@@ -9,6 +9,7 @@ const nama_bank_select = $('#nama-bank-select');
 const bukti_pembayaran = $('#bukti-pembayaran');
 
 const nominal = $('#nominal');
+const nominal_input = $('#nominal-input');
 
 // ketika html ready/selesai dimuat maka jalankan callback berikut
 $(document).ready(function () {
@@ -40,9 +41,11 @@ $(document).ready(function () {
 
     const tempValue = formatAngka(this.value, { reverse: true });
 
+    nominal_input.val(tempValue);
     this.value = tempValue;
 
     if (isNaN(tempValue) || tempValue < 0) {
+      nominal_input.val(0);
       this.value = 0;
     }
 

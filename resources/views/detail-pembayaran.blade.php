@@ -19,7 +19,7 @@
           <p class="card-text mb-3">
             Nama Bank : {{ $siswa->nama_bank }}<br>
             Nama Pemilik Rekening : {{ $siswa->nama_pemilik_rekening }}<br>
-            Nominal : {{ $siswa->nominal }}
+            Nominal : {{ number_format($siswa->nominal, 0, '.', '.') }}
           </p>
           <a href="/page-pembayaran">Kembali</a>
         </div>

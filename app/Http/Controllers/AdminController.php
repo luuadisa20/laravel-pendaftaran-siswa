@@ -81,12 +81,21 @@ class AdminController extends Controller
     $validator = Validator::make($request->all(), [
       'nama-bank-input' => 'required',
       'nama-pemilik-rekening' => 'required',
-      'nominal' => 'required',
+      'nominal' => 'required|gt:0',
     ]);
 
     $validator->after(function ($validator) {
-      if (!file_exists($_FILES['bukti-pembayaran']['tmp_name'])) {
+      $file_exists = file_exists($_FILES['bukti-pembayaran']['tmp_name']);
+
+      if (!$file_exists) {
         $validator->errors()->add('bukti-pembayaran', 'Bukti pembayaran is required');
+      }
+
+      $extensions_allowed = ['image/gif', 'image/jpeg', 'image/jpg', 'image/png'];
+      $type_in_array = in_array($_FILES['bukti-pembayaran']["type"], $extensions_allowed);
+
+      if ($file_exists && !$type_in_array) {
+        $validator->errors()->add('bukti-pembayaran', 'Bukti pembayaran only accept image');
       }
     });
 
@@ -97,6 +106,7 @@ class AdminController extends Controller
     }
 
     $filename = 'file' . time() . $_FILES['bukti-pembayaran']['name'];
+    // file6783218632user.png
 
     $lokasi_upload = './pembayaran/' . $filename;
 
