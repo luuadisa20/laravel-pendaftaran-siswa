@@ -26,7 +26,6 @@
                     <strong class="text-primary-lrvl">Lihat</strong>
                   </a>
                 @endif
-
               </td>
               <td>
                 <a href="/detail-pendaftaran/{{ $siswa->id }}">

@@ -10,9 +10,18 @@
           <li class="nav-item {{ $title === 'Dashboard' ? 'active' : '' }}">
             <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
-          <li class="nav-item {{ $title === 'Pembayaran' ? 'active' : '' }}">
-            <a class="nav-link" href="/page-pembayaran">Pembayaran</a>
-          </li>
+          @if (Auth::user()->role === 'admin')
+            <li class="nav-item {{ $title === 'Verifikasi Pembayaran' ? 'active' : '' }}">
+              <a class="nav-link" href="/page-pembayaran">Verifikasi Pembayaran</a>
+            </li>
+            <li class="nav-item {{ $title === 'Pesan' ? 'active' : '' }}">
+              <a class="nav-link" href="/pesan">Pesan</a>
+            </li>
+          @else
+            <li class="nav-item {{ $title === 'Pembayaran' ? 'active' : '' }}">
+              <a class="nav-link" href="/page-pembayaran">Pembayaran</a>
+            </li>
+          @endif
           <li class="nav-item {{ $title === 'Logout' ? 'active' : '' }}">
             <a class="nav-link" href="/dashboard"
               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>

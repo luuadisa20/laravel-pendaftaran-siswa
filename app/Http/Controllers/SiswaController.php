@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\Siswa;
 use App\Models\User;
+use App\Models\Pesan;
+use Illuminate\Support\Facades\Session;
 use Spatie\Permission\Models\Role;
 
 use PDF;
@@ -84,5 +86,28 @@ class SiswaController extends Controller
 
     // menampilkan data pdf ke layar browser
     return $pdf->stream('pendaftaran-siswa-pdf.pdf');
+  }
+
+  public function pesan(Request $request)
+  {
+    // validasi form pesan
+    $this->validate($request, [
+      'nama' => 'required',
+      'email' => "required|email",
+      'no-hp' => 'required',
+      'pesan' => 'required'
+    ]);
+
+    // menyimpan data pesan ke database
+    $pesan = new Pesan;
+    $pesan->nama = $request->post('nama');
+    $pesan->email = $request->post('email');
+    $pesan->no_hp = $request->post('no-hp');
+    $pesan->pesan = $request->post('pesan');
+    $pesan->save();
+
+    Session::flash('message', 'Pesan berhasil dikirim.');
+    Session::flash('alert-class', 'alert-success');
+    return redirect('/hubungi-kami');
   }
 }

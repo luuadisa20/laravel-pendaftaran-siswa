@@ -74,6 +74,11 @@ Route::get(
   [AdminController::class, 'index']
 )->middleware('auth');
 
+Route::post(
+  '/pesan',
+  [SiswaController::class, 'pesan']
+)->name('pesan');
+
 Route::get(
   '/page-pembayaran',
   [AdminController::class, 'pembayaran']
@@ -95,6 +100,16 @@ Route::get(
   '/detail-pendaftaran/{id}',
   [AdminController::class, 'detail_pendaftaran']
 )->name('detail_pendaftaran')->middleware(['auth', 'admin']);
+
+Route::get(
+  '/pesan',
+  [AdminController::class, 'pesan']
+)->name('pesan')->middleware(['auth', 'admin']);
+
+Route::get(
+  '/detail-pesan/{id}',
+  [AdminController::class, 'detail_pesan']
+)->name('detail-pesan')->middleware(['auth', 'admin']);
 
 Route::post(
   '/proses-verifikasi',

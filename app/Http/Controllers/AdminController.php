@@ -29,7 +29,7 @@ class AdminController extends Controller
     }
   }
 
-  public function pembayaran(Request $request)
+  public function pembayaran()
   {
     $data = [];
 
@@ -149,5 +149,27 @@ class AdminController extends Controller
     Session::flash('message', 'Penolakan berhasil dilakukan');
     Session::flash('alert-class', 'alert-success');
     return redirect('/page-pembayaran');
+  }
+
+  public function pesan()
+  {
+    $pesan = DB::table('pesan')->paginate(10);
+
+    $data['title'] = 'Pesan';
+    $data['pesan'] = $pesan;
+
+    return view('pesan', $data);
+  }
+
+  public function detail_pesan($id = null)
+  {
+    $data = [];
+
+    $pesan = DB::table('pesan')->where('id', '=', $id)->first();
+
+    $data['title'] = 'Detail pesan';
+    $data['pesan'] = $pesan;
+
+    return view('detail-pesan', $data);
   }
 }
